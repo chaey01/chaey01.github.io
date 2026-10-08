@@ -6,30 +6,30 @@ let themes = [
 ];
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(500, 500); // Square canvas (Width x Height)
   colorMode(HSB, 360, 100, 100); // Set color mode to HSB
   background(themes[0].bg[0], themes[0].bg[1], themes[0].bg[2]);
 }
 
 function draw() {
-  // 1. 자동 배경 전환 계산 (frameCount와 ler프 활용)
-  let transitionSpeed = 0.003; // 값이 작을수록 느리고 부드럽게 전환됩니다.
+  // 1. Calculate automatic background transition using lerp
+  let transitionSpeed = 0.012; // Slightly faster transition speed
   let progress = (frameCount * transitionSpeed) % themes.length;
   let idx1 = floor(progress);
   let idx2 = (idx1 + 1) % themes.length;
-  let t = progress - idx1; // 0과 1 사이의 보간 값
+  let t = progress - idx1; // Interpolation factor between 0 and 1
 
-  // 현재 테마와 다음 테마 색상 가져오기
+  // Get current and next theme colors
   let c1 = themes[idx1].bg;
   let c2 = themes[idx2].bg;
 
-  // HSB 값을 부드럽게 보간(lerp)
+  // Smoothly interpolate HSB values
   let currentH = lerp(c1[0], c2[0], t);
   let currentS = lerp(c1[1], c2[1], t);
   let currentB = lerp(c1[2], c2[2], t);
 
-  // 2. Trail 효과: 변화하는 배경색을 기준으로 잔상 적용
-  fill(currentH, currentS, currentB, 0.05); // 5% (0.05) 투명도
+  // 2. Trail effect: Apply semi-transparent shifting background color
+  fill(currentH, currentS, currentB, 0.05); // 5% (0.05) opacity
   rect(0, 0, width, height); // Cover the entire canvas
 
   // 3. Calculate mouse speed
@@ -45,9 +45,4 @@ function draw() {
 
   // 6. Draw glowing, gradient-filled circle trails
   circle(mouseX, mouseY, radius);
-}
-
-// 창 크기가 변할 때 화면 맞춤
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
 }
