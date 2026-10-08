@@ -26,7 +26,9 @@
   const START_MODE = "flat";   // 처음 보일 배열: "flat", "tilt", "ring", "gallery"
   const AUTO_SPIN = 0.001;     // 가만히 있을 때 저절로 도는 속도 (0이면 멈춤)
   const SCROLL_SPEED = 0.0005; // 스크롤할 때 도는 정도
-  const HOVER_SCALE = 1.25;    // 마우스를 올렸을 때 커지는 정도
+  const HOVER_SCALE = 1;       // 마우스를 올렸을 때 커지는 정도 (1이면 안 움직임)
+  const SPREAD_X = 1;          // 가로로 퍼지는 정도 (1이면 화면 폭에 꽉 차게)
+  const SPREAD_Y = 1;          // 세로로 퍼지는 정도 (1이면 무대 높이에 꽉 차게)
   const SMOOTH = 0.1;          // 배열이 바뀔 때 움직임의 부드러움 (작을수록 느긋하게)
   const CARD = 170;            // 카드 너비(px). style.css의 .ring-on .week width와 같게 맞춰요
 
@@ -76,12 +78,16 @@
   let rot = 0;
   let vel = 0;
   let hovered = -1;
-  let R = 200;
   let W = 1000;
+  let H = 700;
+  let RX = 400;   // 가로 반지름
+  let RY = 250;   // 세로 반지름
 
   function resize() {
     W = grid.clientWidth;
-    R = Math.min(W * 0.32, CARD * 1.75);
+    H = grid.clientHeight;
+    RX = Math.max(0, (W - CARD) / 2 - 10) * SPREAD_X;
+    RY = Math.max(0, (H - CARD * 1.2) / 2 - 10) * SPREAD_Y;
   }
   resize();
   window.addEventListener("resize", resize);
@@ -102,35 +108,38 @@
     });
   });
 
-  grid.addEventListener(
-    "wheel",
-    (e) => {
-      if (mode === "gallery") return;   // 격자에서는 페이지가 그냥 스크롤돼요
-      e.preventDefault();
-      vel += e.deltaY * SCROLL_SPEED;
+  // 페이지를 스크롤하면 원이 따라서 돌아요 (페이지 스크롤은 막지 않아요)
+  let lastY = window.scrollY;
+  window.addEventListener(
+    "scroll",
+    () => {
+      const dy = window.scrollY - lastY;
+      lastY = window.scrollY;
+      if (mode !== "gallery") vel += dy * SCROLL_SPEED;
     },
-    { passive: false }
+    { passive: true }
   );
+  
 
 
   // ---- 5) 배열마다 카드가 있어야 할 자리 ----
   function target(i) {
     const a = (i / N) * Math.PI * 2 + rot;
 
-    // 평평한 원
+    // 가로로 넓은 타원
     if (mode === "flat") {
-      return { x: R * Math.cos(a), y: R * Math.sin(a), z: 0, ry: 0 };
+      return { x: RX * Math.cos(a), y: RY * Math.sin(a), z: 0, ry: 0 };
     }
 
-    // 비스듬히 눕힌 원
+    // 비스듬히 눕힌 타원
     if (mode === "tilt") {
-      return { x: R * 1.3 * Math.cos(a), y: R * 0.42 * Math.sin(a), z: R * 0.9 * Math.sin(a), ry: 0 };
+      return { x: RX * Math.cos(a), y: RY * 0.45 * Math.sin(a), z: RX * 0.6 * Math.sin(a), ry: 0 };
     }
 
     // 회전목마
     if (mode === "ring") {
-      const r = R * 1.4;
-      return { x: r * Math.sin(a), y: 0, z: r * Math.cos(a) - r, ry: (a * 180) / Math.PI };
+      const depth = RX * 0.6;
+      return { x: RX * Math.sin(a), y: 0, z: depth * Math.cos(a) - depth, ry: (a * 180) / Math.PI };
     }
 
     // 격자 (화면 폭에 맞춰 줄 수 자동)
@@ -168,7 +177,7 @@
       c.style.transform =
         "translate3d(" + s.x.toFixed(1) + "px," + s.y.toFixed(1) + "px," + s.z.toFixed(1) + "px) " +
         "rotateY(" + s.ry.toFixed(1) + "deg) scale(" + s.s.toFixed(3) + ")";
-      c.style.zIndex = hovered === i ? 3000 : Math.round(1000 + s.z);
+      c.style.zIndex = Math.round(1000 + s.z);
     });
 
     requestAnimationFrame(tick);

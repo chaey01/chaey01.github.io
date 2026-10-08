@@ -226,7 +226,7 @@ body.entered .site {
 /* ----- HERO ----- */
 
 .hero {
-  padding: 120px 0 110px;
+  padding: 48px 0 110px;
 }
 
 .sun-button {
@@ -250,12 +250,12 @@ body.entered .site {
 }
 
 .hero h1 {
-  max-width: 21ch;
+  max-width: none;
   margin: 0;
-  font-size: clamp(30px, 4.2vw, 48px);
+  font-size: clamp(44px, 7vw, 104px);
   font-weight: 500;
-  line-height: 1.12;
-  letter-spacing: -0.025em;
+  line-height: 1.0.5;
+  letter-spacing: -0.03em;
 }
 
 .current {
@@ -309,8 +309,8 @@ body.entered .site {
 }
 
 .week-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  justify-content: space-between;
   gap: 16px;
 }
 
@@ -388,7 +388,7 @@ body.entered .site {
 
 .site-footer {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
   margin-top: 160px;
   padding: 36px 0 64px;
@@ -516,7 +516,8 @@ button {
 
 @media (max-width: 900px) {
   .week-grid { grid-template-columns: repeat(2, 1fr); }
-  .site-footer { grid-template-columns: repeat(2, 1fr); }
+  .site-footer { grid-template-columns: repeat(3, 1fr); }
+  .site-footer { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 560px) {
@@ -566,7 +567,7 @@ button {
 
 /* 두 번째 줄부터 (is ~ space.) 작게 */
 .hero h1 .line + .line {
-  font-size: 0.55em;      /* 이름 크기의 55% */
+  font-size: 0.45em;      /* 이름 크기의 55% */
   line-height: 1.25;
   margin-top: 0.6em;      /* 이름과의 간격 */
 }
