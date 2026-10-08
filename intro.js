@@ -5,7 +5,7 @@
    2. 동그란 물방울 하나가 마우스를 따라다니며 아래 글자를
       볼록렌즈처럼 휘어 보이게 해요.
       마우스가 없으면 이름 위를 천천히 떠다녀요.
-   3. 클릭(또는 Enter)하면 물방울이 커지면서
+   3. 클릭(또는 Enter)하면 화면이 흐려지면서
       인트로가 사라지고 사이트가 나타나요.
 
    새로고침하거나 처음 들어오면 인트로가 나오고,
@@ -61,7 +61,6 @@
   const T = { x: 0, y: 0 };     // 물방울이 가려는 위치
   let hover = false;
   let leaving = false;
-  let grow = 0;
   let t = 0;
   let rafId;
   let first = true;
@@ -121,9 +120,7 @@
     L.x += (T.x - L.x) * follow;
     L.y += (T.y - L.y) * follow;
 
-    // 클릭 후 물방울이 커짐
-    if (leaving) grow += (1 - grow) * 0.08;
-    const r = R * (1 + grow * 1.4);
+    const r = R;
 
     // 1) 원본 그리기
     ctx.drawImage(base, 0, 0);
@@ -186,21 +183,29 @@
   }
 
 
-  // ---- 클릭: 물방울이 커지며 입장 ----
+  // ---- 클릭: 화면이 흐려지며 사이트 안으로 들어가기 ----
+  // 픽셀 계산은 멈추고, 마지막 화면을 CSS로 흐리게 만들어서 렉 없이 부드러워요.
   function enter() {
     if (leaving) return;
     leaving = true;
+
+    cancelAnimationFrame(rafId);
+
+    canvas.style.transition = "filter 0.9s ease";
+    canvas.style.willChange = "filter";
+    requestAnimationFrame(() => {
+      canvas.style.filter = "blur(18px)";
+    });
 
     setTimeout(() => {
       intro.classList.add("leaving");
       document.body.classList.remove("intro-active");
       document.body.classList.add("entered");
-    }, 350);
+    }, 200);
 
     setTimeout(() => {
-      cancelAnimationFrame(rafId);
       intro.remove();
-    }, 1600);
+    }, 1400);
   }
 
 
