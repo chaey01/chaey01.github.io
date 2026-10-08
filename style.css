@@ -188,9 +188,9 @@ body.entered .site {
 ======================================== */
 
 .container {
-  max-width: 1120px;
+  max-width: nonepx;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 6vw;
 }
 
 
@@ -683,4 +683,15 @@ button {
   margin-top: 10px;
   font: 400 11px var(--mono);
   color: var(--muted);
+}
+
+/* footer: 세 항목 한 줄 고정 */
+.site-footer {
+  grid-template-columns: repeat(3, 1fr) !important;
+}
+
+@media (max-width: 560px) {
+  .site-footer {
+    grid-template-columns: 1fr !important;
+  }
 }
