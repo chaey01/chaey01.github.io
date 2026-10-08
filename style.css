@@ -710,3 +710,40 @@ button {
   justify-self: center;
   text-align: center;
 }
+/* ========================================
+   WEEK 5 썸네일 모드 (홈 iframe 안에서만)
+======================================== */
+
+.as-thumb body {
+  margin: 0;
+  overflow: hidden;
+}
+
+/* 밈 말고 나머지는 숨기기 */
+.as-thumb body * {
+  visibility: hidden;
+}
+
+.as-thumb .meme,
+.as-thumb .meme * {
+  visibility: visible;
+}
+
+/* 밈을 썸네일 크기에 꽉 차게 */
+.as-thumb .meme {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  aspect-ratio: auto;
+}
+
+.as-thumb .meme-text {
+  bottom: 8%;
+  font-size: 7vw;
+}
+/* 이름(Chaeyoung Shim)만 두껍게 */
+.hero h1 .line-1 {
+  font-weight: 600;
+}

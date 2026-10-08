@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="../style.css">
 </head>
 
+
 <body>
 
   <header>
@@ -28,6 +29,14 @@
 <button id="generate-button">[ Generate Meme ]</button>
 
 <script src="script.js"></script>
+<!-- 홈 썸네일(iframe) 안에서 열렸을 때: 밈만 보여 주고 자동으로 바꾸기 -->
+  <script>
+    if (window.self !== window.top) {
+      document.documentElement.classList.add("as-thumb");
+      const btn = document.querySelector("button");
+      if (btn) setInterval(() => btn.click(), 2000);   // 2초마다 새 밈
+    }
+  </script>
   </main>
 
 <footer>
