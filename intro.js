@@ -2,24 +2,31 @@
    WATER DROP INTRO
 
    1. 흰 화면 가운데에 이름(data-word)이 있어요.
-   2. 물방울 하나가 마우스를 따라다니며 아래 글자를
+   2. 동그란 물방울 하나가 마우스를 따라다니며 아래 글자를
       볼록렌즈처럼 휘어 보이게 해요.
       마우스가 없으면 이름 위를 천천히 떠다녀요.
    3. 클릭(또는 Enter)하면 물방울이 커지면서
       인트로가 사라지고 사이트가 나타나요.
 
-   같은 탭에서 한 번 본 뒤에는 다시 나오지 않아요.
+   새로고침하거나 처음 들어오면 인트로가 나오고,
+   내 사이트의 Week 페이지에서 돌아올 때는 건너뛰어요.
 ======================================== */
 
 (function () {
   const intro = document.getElementById("intro");
   if (!intro) return;
 
-  // ---- 이미 봤거나, '동작 줄이기' 설정이면 인트로 건너뛰기 ----
-  let seen = false;
-  try { seen = sessionStorage.getItem("introSeen") === "1"; } catch (e) {}
+  // ---- 인트로를 건너뛸지 정하기 ----
+  // 새로고침하거나 처음 들어오면 → 인트로 나옴
+  // 내 사이트의 Week 페이지에서 돌아오면 → 건너뜀
+  const nav = performance.getEntriesByType("navigation")[0];
+  const isReload = nav && nav.type === "reload";
+  const isBack = nav && nav.type === "back_forward";
+  let fromInside = false;
+  try { fromInside = !!document.referrer && new URL(document.referrer).origin === location.origin; } catch (e) {}
+  const skip = !isReload && (fromInside || isBack);
 
-  if (seen || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  if (skip || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     intro.remove();
     document.body.classList.add("entered");
     return;
@@ -31,21 +38,27 @@
   const ctx = canvas.getContext("2d", { willReadFrequently: true });
   const WORD = intro.dataset.word || "HELLO";
 
-  // ---- 조절하기 좋은 값들 ----
-  const DROP_SIZE = 0.17;     // 물방울 크기 (화면 짧은 쪽 대비 반지름 비율)
-  const FOLLOW = 0.07;        // 마우스를 따라오는 속도 (클수록 빠름)
-  const MAGNIFY = 0.16;       // 가운데 확대 정도
-  const EDGE_BEND = 0.36;     // 가장자리에서 휘는 정도
-  const COLOR_FRINGE = 0.04;  // 가장자리 색 번짐 (0이면 없음)
-  const SHADOW = 0.13;        // 바깥 그림자 진하기
-  const TEXT_COLOR = "#111";  // 이름 색
-  const BG_COLOR = "#fff";    // 배경 색
+  // ---- 글씨체 ----
+  // 다른 폰트를 쓰려면 style.css 맨 위 @import에 그 폰트를 추가한 뒤
+  // 아래 FONT_FAMILY의 첫 번째 이름을 바꿔요.
+  const FONT_FAMILY = '"Courier New", Courier, monospace';
+  const FONT_WEIGHT = 700;      // Courier New는 보통(400)과 굵게(700) 두 가지예요
+  const TEXT_WIDTH = 0.8;       // 이름이 화면 너비에서 차지하는 비율
+
+  // ---- 물방울 조절 값 ----
+  const DROP_SIZE = 0.17;       // 물방울 크기 (화면 짧은 쪽 대비 반지름 비율)
+  const FOLLOW = 0.2;           // 마우스를 따라오는 속도 (1에 가까울수록 즉시 따라옴)
+  const MAGNIFY = 0.16;         // 가운데 확대 정도
+  const EDGE_BEND = 0.36;       // 가장자리에서 휘는 정도
+  const COLOR_FRINGE = 0.04;    // 가장자리 색 번짐 (0이면 없음)
+  const SHADOW = 0.13;          // 바깥 그림자 진하기
+  const TEXT_COLOR = "#111";    // 이름 색
+  const BG_COLOR = "#fff";      // 배경 색
 
   let W, H, dp, R;
-  let base, bd;               // 이름이 그려진 원본 이미지와 그 픽셀
-  const L = { x: 0, y: 0 };   // 물방울 현재 위치
-  const T = { x: 0, y: 0 };   // 물방울이 가려는 위치
-  const P = { x: 0, y: 0 };   // 이전 프레임 위치 (속도 계산용)
+  let base, bd;                 // 이름이 그려진 원본 이미지와 그 픽셀
+  const L = { x: 0, y: 0 };     // 물방울 현재 위치
+  const T = { x: 0, y: 0 };     // 물방울이 가려는 위치
   let hover = false;
   let leaving = false;
   let grow = 0;
@@ -70,10 +83,14 @@
     g.fillStyle = BG_COLOR;
     g.fillRect(0, 0, W, H);
 
-    // 모노스페이스 한 글자 폭 ≈ 0.6em → 화면 너비의 80%에 맞춤
-    const size = Math.min((W * 0.8) / (WORD.length * 0.6), H * 0.28);
+    // 글자 실제 폭을 재서 화면 너비에 딱 맞추기 (어떤 폰트든 잘리지 않게)
+    let size = 100;
+    g.font = `${FONT_WEIGHT} ${size}px ${FONT_FAMILY}`;
+    const measured = g.measureText(WORD).width || 1;
+    size = Math.min(size * (W * TEXT_WIDTH) / measured, H * 0.28);
+
     g.fillStyle = TEXT_COLOR;
-    g.font = `600 ${size}px "Geist Mono", "Courier New", monospace`;
+    g.font = `${FONT_WEIGHT} ${size}px ${FONT_FAMILY}`;
     g.textAlign = "center";
     g.textBaseline = "middle";
     g.fillText(WORD, W / 2, H / 2);
@@ -83,8 +100,8 @@
     R = Math.max(110, Math.min(window.innerWidth, window.innerHeight) * DROP_SIZE) * dp;
 
     if (first) {
-      L.x = T.x = P.x = W / 2;
-      L.y = T.y = P.y = H / 2;
+      L.x = T.x = W / 2;
+      L.y = T.y = H / 2;
       first = false;
     }
   }
@@ -99,18 +116,10 @@
       T.y = H / 2 + Math.sin(t * 0.9) * H * 0.12;
     }
 
-    L.x += (T.x - L.x) * FOLLOW;
-    L.y += (T.y - L.y) * FOLLOW;
-
-    // 빨리 움직이면 진행 방향으로 살짝 늘어나기 (액체 느낌)
-    const vx = L.x - P.x;
-    const vy = L.y - P.y;
-    const vl = Math.hypot(vx, vy) || 1;
-    P.x = L.x;
-    P.y = L.y;
-    const sp = Math.min(vl / (dp * 45), 0.22);
-    const ux = vx / vl;
-    const uy = vy / vl;
+    // 떠다닐 땐 느긋하게, 마우스를 따라갈 땐 빠르게
+    const follow = hover ? FOLLOW : 0.06;
+    L.x += (T.x - L.x) * follow;
+    L.y += (T.y - L.y) * follow;
 
     // 클릭 후 물방울이 커짐
     if (leaving) grow += (1 - grow) * 0.08;
@@ -130,12 +139,11 @@
     ctx.fill();
     ctx.restore();
 
-    // 3) 물방울 안쪽: 아래 글자를 굴절시켜 다시 그리기
-    const reach = r * (1 + sp) + 2;
-    const x0 = Math.max(0, Math.floor(L.x - reach));
-    const y0 = Math.max(0, Math.floor(L.y - reach));
-    const x1 = Math.min(W, Math.ceil(L.x + reach));
-    const y1 = Math.min(H, Math.ceil(L.y + reach));
+    // 3) 물방울 안쪽: 아래 글자를 굴절시켜 다시 그리기 (항상 동그란 원)
+    const x0 = Math.max(0, Math.floor(L.x - r - 1));
+    const y0 = Math.max(0, Math.floor(L.y - r - 1));
+    const x1 = Math.min(W, Math.ceil(L.x + r + 1));
+    const y1 = Math.min(H, Math.ceil(L.y + r + 1));
     const bw = x1 - x0;
     const bh = y1 - y0;
 
@@ -147,11 +155,7 @@
         const dy = y0 + j - L.y;
         for (let i = 0; i < bw; i++) {
           const dx = x0 + i - L.x;
-
-          // 움직이는 방향으로 늘어난 타원 안에 있는지
-          const along = (dx * ux + dy * uy) / (1 + sp);
-          const perp = (-dx * uy + dy * ux) / (1 - sp * 0.4);
-          const d = Math.hypot(along, perp) / r;
+          const d = Math.hypot(dx, dy) / r;
           if (d >= 1) continue;
 
           // 가운데는 확대, 가장자리는 바깥을 끌어당김
@@ -186,8 +190,6 @@
   function enter() {
     if (leaving) return;
     leaving = true;
-
-    try { sessionStorage.setItem("introSeen", "1"); } catch (e) {}
 
     setTimeout(() => {
       intro.classList.add("leaving");
@@ -226,7 +228,7 @@
     intro.focus();
   };
   if (document.fonts && document.fonts.load) {
-    document.fonts.load('600 40px "Geist Mono"').then(start, start);
+    document.fonts.load(`${FONT_WEIGHT} 40px ${FONT_FAMILY}`).then(start, start);
   } else {
     start();
   }
