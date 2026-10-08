@@ -570,3 +570,116 @@ button {
   line-height: 1.25;
   margin-top: 0.6em;      /* 이름과의 간격 */
 }
+
+/* ========================================
+   RING WORK LAYOUT (ring.js와 함께 써요)
+======================================== */
+
+/* 배열 바꾸는 버튼 */
+.ring-modes {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin: 0 0 16px;
+}
+
+.ring-modes button {
+  font: 500 12px var(--sans);
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.ring-modes button.on {
+  background: var(--text);
+  color: var(--bg);
+}
+
+/* 원형 무대 */
+.week-grid.ring-on {
+  display: block;
+  position: relative;
+  height: 760px;
+  perspective: 1200px;
+  overflow: hidden;
+}
+
+.ring-on .ring-stage {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+/* 원 안의 작은 카드 */
+.ring-on .week {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 170px;
+  margin: -85px 0 0 -85px;
+  padding: 6px;
+  border-radius: 3px;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+.ring-on .thumb {
+  border-radius: 2px;
+}
+
+.ring-on .thumb iframe {
+  pointer-events: none;   /* 원 위에서 스크롤·마우스가 잘 먹히게 */
+}
+
+.ring-on .thumb.empty {
+  font-size: 9px;
+}
+
+.ring-on .meta {
+  padding: 6px 2px 0;
+}
+
+.ring-on .meta h2 {
+  display: none;          /* 제목은 가운데에 크게 보여 줘요 */
+}
+
+.ring-on .num {
+  font-size: 10px;
+}
+
+/* 가운데 제목 */
+.ring-label {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  font: 500 14px var(--mono);
+  line-height: 1.6;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.ring-label span {
+  color: var(--muted);
+}
+
+.ring-label.show {
+  opacity: 1;
+}
+
+/* 아래 안내 문구 */
+.ring-foot {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font: 400 11px var(--mono);
+  color: var(--muted);
+}
