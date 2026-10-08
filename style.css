@@ -16,16 +16,16 @@
   --card-hover: rgba(255, 255, 255, 0.9);
 
   /* 배경 빛 덩어리 색 (해 버튼으로 바뀜) */
-  --blob1: #ffc7fa;
-  --blob2: #fbff8e;
-  --blob3: #46c4eb;
+  --blob1: #82d5ff;
+  --blob2: #61a0ff;
+  --blob3: #9346eb;
 
   --sans: "Geist", "Helvetica Neue", Arial, sans-serif;
   --mono: "Geist Mono", "Courier New", monospace;
 }
 
 html[data-palette="dusk"]   { --blob1: #ff3d7f; --blob2: #ffb23d; --blob3: #3d6bff; }
-html[data-palette="forest"] { --blob1: #9be15d; --blob2: #1f7a5c; --blob3: #e0d35d; }
+html[data-palette="forest"] { --blob1: #9be15d; --blob2: #2a8b6a; --blob3: #e0d35d; }
 html[data-palette="mono"]   { --blob1: #9a9a9a; --blob2: #4a4a4a; --blob3: #d0d0d0; }
 
 
@@ -154,8 +154,12 @@ body.entered .site {
   overflow: hidden;
   pointer-events: none;
   filter: blur(90px);
-  opacity: 0.35;
-  animation: hue-shift 20s linear infinite;   /* ← 이 줄 추가 */
+  opacity: 0.5;
+  animation: hue-shift 13s linear infinite;   /* ← 이 줄 추가 */
+}
+@keyframes hue-shift {
+  from { filter: blur(90px) hue-rotate(0deg); }
+  to   { filter: blur(90px) hue-rotate(360deg); }
 }
 
 
@@ -169,9 +173,9 @@ body.entered .site {
   animation: drift 24s ease-in-out infinite alternate;
 }
 
-.b1 { top: -30vmax; left: -15vmax; background: radial-gradient(circle, var(--blob1), transparent 65%); }
-.b2 { top: -35vmax; right: -20vmax; background: radial-gradient(circle, var(--blob2), transparent 65%); animation-duration: 30s; }
-.b3 { top: -10vmax; left: 25vw;   background: radial-gradient(circle, var(--blob3), transparent 65%); animation-duration: 36s; opacity: 0.6; }
+.b1 { top: -15vmax; left: -15vmax;  background: radial-gradient(circle, var(--blob1), transparent 65%); }
+.b2 { top: -15vmax; right: -15vmax; background: radial-gradient(circle, var(--blob2), transparent 65%); animation-duration: 30s; }
+.b3 { top: calc(50vh - 20vmax); left: calc(50vw - 20vmax); width: 40vmax; height: 40vmax; background: radial-gradient(circle, var(--blob3), transparent 65%); animation-duration: 36s; opacity: 0.6; }
 
 @keyframes drift {
   from { transform: translate(0, 0) scale(1); }
@@ -268,8 +272,14 @@ body.entered .site {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #4ade80;
-  box-shadow: 0 0 10px #4ade80;
+  background: #7bff2f;
+  box-shadow: 0 0 10px #7dff1a;
+  animation: blink-dot 2s ease-in-out infinite;
+}
+/* 초록불 깜빡임 */
+@keyframes blink-dot {
+  0%, 100% { opacity: 1;   box-shadow: 0 0 10px #4bff8d; }
+  50%      { opacity: 0.25; box-shadow: 0 0 2px #baff31; }
 }
 
 .more {
@@ -517,4 +527,46 @@ button {
   .week-grid { grid-template-columns: 1fr; }
   .error-container { padding: 20px; }
   .page-nav { flex-direction: column; align-items: center; gap: 15px; }
+}
+/* ========================================
+   TYPING EFFECT
+======================================== */
+
+/* 아직 안 써진 글자: 자리만 차지하고 안 보이게 */
+/* ========================================
+   SOFT TEXT REVEAL
+======================================== */
+
+.hero h1 .word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.hero h1 .char {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(10px);
+  transform: translateY(0.25em);
+  transition:
+    opacity 0.8s ease,
+    filter 0.8s ease,
+    transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.hero h1.reveal .char {
+  opacity: 1;
+  filter: blur(0);
+  transform: none;
+}
+
+/* 줄마다 따로 배치 */
+.hero h1 .line {
+  display: block;
+}
+
+/* 두 번째 줄부터 (is ~ space.) 작게 */
+.hero h1 .line + .line {
+  font-size: 0.55em;      /* 이름 크기의 55% */
+  line-height: 1.25;
+  margin-top: 0.6em;      /* 이름과의 간격 */
 }

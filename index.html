@@ -40,11 +40,11 @@
 
       <!-- ===== NAV ===== -->
       <header class="top">
-        <a href="index.html" class="name">Chaeyoung Shim</a>
+        <a href="index.html" class="name">Code as Nature<br> 2026 Fall</a>
         <nav class="links">
           <a href="#work">Work</a>
           <a href="about.html">About</a>          <!-- about.html은 나중에 만들기 -->
-          <a href="mailto:hello@example.com">Contact</a>  <!-- 내 이메일로 바꾸기 -->
+          <a href="mailto:codudtla@egmail.com">Contact</a>  <!-- 내 이메일로 바꾸기 -->
         </nav>
       </header>
 
@@ -55,11 +55,11 @@
     
 
         <h1>
-          Chaeyoung Shim is a media artist and projection designer
+          Chaeyoung Shim<br> is a media artist and projection designer
           working with code, live performance, and interactive space.
         </h1>
 
-        <p class="current"><span class="dot"></span>Currently MFA Art &amp; Technology at CalArts</p>
+        <p class="current"><span class="dot"></span>Currently MFA Art &amp; Technology at California Institute of the Arts</p>
 
         <a href="about.html" class="more">Learn about me →</a>
       </section>
@@ -70,7 +70,7 @@
 
         <div class="section-head">
           <span>Code as Nature — Fall 2026</span>
-          <span>12 weeks</span>
+          <span>14 weeks</span>
         </div>
 
         <div class="week-grid">
@@ -192,6 +192,66 @@
 
 
   <script src="intro.js"></script>
+  <!-- 소개 문장: 한 글자씩 부드럽게 나타나기 -->
+  <script>
+    (function () {
+      const el = document.querySelector(".hero h1");
+      if (!el) return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      const STAGGER = 28;   // 글자 사이 간격(ms)
+      const LINE_PAUSE = 900;   // ← 추가: 줄이 바뀔 때 쉬는 시간(ms)
+
+      // <br>을 기준으로 줄 나누기
+      let lines = [""];
+      el.childNodes.forEach((node) => {
+        if (node.nodeName === "BR") lines.push("");
+        else lines[lines.length - 1] += node.textContent;
+      });
+      lines = lines.map((s) => s.replace(/\s+/g, " ").trim()).filter(Boolean);
+
+      el.setAttribute("aria-label", lines.join(" "));
+      el.textContent = "";
+
+      let n = 0;
+      lines.forEach((line, l) => {
+         if (l > 0) n += LINE_PAUSE / STAGGER;   // ← 추가: 두 번째 줄부터 잠깐 쉬기
+        // 줄마다 따로 감싸기 (line-1, line-2 ...)
+        const lineSpan = document.createElement("span");
+        lineSpan.className = "line line-" + (l + 1);
+        el.append(lineSpan);
+
+        line.split(" ").forEach((word, w) => {
+          if (w > 0) lineSpan.append(" ");
+          const wordSpan = document.createElement("span");
+          wordSpan.className = "word";
+          wordSpan.setAttribute("aria-hidden", "true");
+          for (const ch of word) {
+            const c = document.createElement("span");
+            c.className = "char";
+            c.textContent = ch;
+            c.style.transitionDelay = (n++ * STAGGER) + "ms";
+            wordSpan.append(c);
+          }
+          lineSpan.append(wordSpan);
+        });
+      });
+
+      // 인트로가 끝나고 사이트가 나타난 뒤 시작
+      function start() { setTimeout(() => el.classList.add("reveal"), 600); }
+      if (document.body.classList.contains("entered")) {
+        start();
+      } else {
+        new MutationObserver((m, obs) => {
+          if (document.body.classList.contains("entered")) {
+            obs.disconnect();
+            start();
+          }
+        }).observe(document.body, { attributes: true, attributeFilter: ["class"] });
+      }
+    })();
+  </script>
+
 
 
 </body>
