@@ -695,3 +695,18 @@ button {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* footer: 마지막 항목(Get in touch)을 오른쪽 끝에 붙이기 */
+.site-footer > div:last-child {
+  justify-self: end;
+  text-align: right;
+}
+
+.site-footer > div:last-child .social {
+  justify-content: flex-end;
+}
+
+.site-footer > div:nth-child(2) {
+  justify-self: center;
+  text-align: center;
+}
