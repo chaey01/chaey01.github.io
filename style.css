@@ -188,7 +188,7 @@ body.entered .site {
 ======================================== */
 
 .container {
-  max-width: nonepx;
+  max-width: none;
   margin: 0 auto;
   padding: 0 6vw;
 }
@@ -254,7 +254,7 @@ body.entered .site {
   margin: 0;
   font-size: clamp(44px, 7vw, 104px);
   font-weight: 500;
-  line-height: 1.0.5;
+  line-height: 1.05;
   letter-spacing: -0.03em;
 }
 
@@ -746,4 +746,100 @@ button {
 /* 이름(Chaeyoung Shim)만 두껍게 */
 .hero h1 .line-1 {
   font-weight: 600;
+}
+/* ========================================
+   ABOUT PAGE
+======================================== */
+
+.about {
+  margin: 0;
+  padding: 60px 0 40px;
+  max-width: none;
+  text-align: left;
+}
+
+.about h1 {
+  margin: 0 0 40px;
+  font-size: clamp(44px, 7vw, 104px);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.about-intro p {
+  margin: 0 0 24px;
+  max-width: 28ch;
+  font-size: clamp(24px, 3.2vw, 44px);
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+}
+
+.about .current {
+  margin-top: 36px;
+  font-size: 15px;
+}
+
+.about-list {
+  margin-top: 72px;
+}
+
+.about-list h2 {
+  margin: 0 0 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.about-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.about-list li {
+  display: flex;
+  gap: 32px;
+  padding: 8px 0;
+  font-size: clamp(15px, 1.2vw, 18px);
+  font-weight: 500;
+}
+
+.about-list li span {
+  flex: 0 0 130px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  padding-top: 2px;
+}
+
+.about-list a {
+  border-bottom: 1px solid var(--line);
+}
+/* ========================================
+   PAGE TRANSITION (페이지 넘어갈 때 부드럽게)
+======================================== */
+
+/* 1) 이전 페이지와 다음 페이지가 서로 스르르 겹치며 바뀌어요 */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.6s;   /* 바뀌는 시간: 숫자를 키우면 더 느긋하게 */
+}
+
+/* 2) About 내용이 아래에서 살짝 떠오르며 나타나요 */
+.about-page .site {
+  animation: page-in 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
 }
