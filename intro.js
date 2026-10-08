@@ -1,13 +1,14 @@
 /* ========================================
-   PARTICLE INTRO
+   WATER DROP INTRO
 
-   1. 흩어져 있던 점들이 모여서 글자(data-word)를 만들어요.
-   2. 마우스를 가까이 대면 점들이 밀려나며 흩어져요.
-   3. 클릭(또는 Enter)하면 점들이 사방으로 터지며
+   1. 흰 화면 가운데에 이름(data-word)이 있어요.
+   2. 물방울 하나가 마우스를 따라다니며 아래 글자를
+      볼록렌즈처럼 휘어 보이게 해요.
+      마우스가 없으면 이름 위를 천천히 떠다녀요.
+   3. 클릭(또는 Enter)하면 물방울이 커지면서
       인트로가 사라지고 사이트가 나타나요.
 
    같은 탭에서 한 번 본 뒤에는 다시 나오지 않아요.
-   (Week 페이지에 갔다가 돌아올 때마다 인트로가 나오면 번거로우니까)
 ======================================== */
 
 (function () {
@@ -27,158 +28,188 @@
   document.body.classList.add("intro-active");
 
   const canvas = intro.querySelector("canvas");
-  const ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
   const WORD = intro.dataset.word || "HELLO";
 
   // ---- 조절하기 좋은 값들 ----
-  const SPRING = 0.03;        // 글자 자리로 돌아가려는 힘
-  const FRICTION = 0.85;      // 클수록 오래 미끄러짐
-  const MOUSE_RADIUS = 90;    // 마우스가 밀어내는 범위(px)
-  const MOUSE_FORCE = 6;      // 밀어내는 세기
-  const DOT = 2;              // 점 크기(px)
+  const DROP_SIZE = 0.17;     // 물방울 크기 (화면 짧은 쪽 대비 반지름 비율)
+  const FOLLOW = 0.07;        // 마우스를 따라오는 속도 (클수록 빠름)
+  const MAGNIFY = 0.16;       // 가운데 확대 정도
+  const EDGE_BEND = 0.36;     // 가장자리에서 휘는 정도
+  const COLOR_FRINGE = 0.04;  // 가장자리 색 번짐 (0이면 없음)
+  const SHADOW = 0.13;        // 바깥 그림자 진하기
+  const TEXT_COLOR = "#111";  // 이름 색
+  const BG_COLOR = "#fff";    // 배경 색
 
-  let W, H, dpr;
-  let particles = [];
+  let W, H, dp, R;
+  let base, bd;               // 이름이 그려진 원본 이미지와 그 픽셀
+  const L = { x: 0, y: 0 };   // 물방울 현재 위치
+  const T = { x: 0, y: 0 };   // 물방울이 가려는 위치
+  const P = { x: 0, y: 0 };   // 이전 프레임 위치 (속도 계산용)
+  let hover = false;
   let leaving = false;
+  let grow = 0;
+  let t = 0;
   let rafId;
-  const mouse = { x: -9999, y: -9999 };
+  let first = true;
 
 
-  // 글자를 보이지 않는 캔버스에 그린 뒤, 글자 픽셀 위치만 골라내요
-  function sampleText() {
-    const off = document.createElement("canvas");
-    off.width = W;
-    off.height = H;
-    const o = off.getContext("2d");
+  // 화면 크기에 맞춰 원본 이미지(흰 배경 + 이름) 만들기
+  function build() {
+    dp = Math.min(window.devicePixelRatio || 1, 1.5);   // 성능을 위해 최대 1.5배
+    W = Math.round(window.innerWidth * dp);
+    H = Math.round(window.innerHeight * dp);
+    canvas.width = W;
+    canvas.height = H;
+
+    base = document.createElement("canvas");
+    base.width = W;
+    base.height = H;
+    const g = base.getContext("2d");
+
+    g.fillStyle = BG_COLOR;
+    g.fillRect(0, 0, W, H);
 
     // 모노스페이스 한 글자 폭 ≈ 0.6em → 화면 너비의 80%에 맞춤
-    const size = Math.min((W * 0.8) / (WORD.length * 0.6), H * 0.3);
-    o.font = `600 ${size}px "Geist Mono", "Courier New", monospace`;
-    o.textAlign = "center";
-    o.textBaseline = "middle";
-    o.fillStyle = "#fff";
-    o.fillText(WORD, W / 2, H / 2);
+    const size = Math.min((W * 0.8) / (WORD.length * 0.6), H * 0.28);
+    g.fillStyle = TEXT_COLOR;
+    g.font = `600 ${size}px "Geist Mono", "Courier New", monospace`;
+    g.textAlign = "center";
+    g.textBaseline = "middle";
+    g.fillText(WORD, W / 2, H / 2);
 
-    const data = o.getImageData(0, 0, W, H).data;
-    const gap = Math.max(4, Math.round(size / 20)); // 점 간격
-    const points = [];
+    bd = g.getImageData(0, 0, W, H).data;
 
-    for (let y = 0; y < H; y += gap) {
-      for (let x = 0; x < W; x += gap) {
-        if (data[(y * W + x) * 4 + 3] > 128) points.push({ x, y });
-      }
+    R = Math.max(110, Math.min(window.innerWidth, window.innerHeight) * DROP_SIZE) * dp;
+
+    if (first) {
+      L.x = T.x = P.x = W / 2;
+      L.y = T.y = P.y = H / 2;
+      first = false;
     }
-    return points;
-  }
-
-
-  function build() {
-    dpr = window.devicePixelRatio || 1;
-    W = window.innerWidth;
-    H = window.innerHeight;
-    canvas.width = W * dpr;
-    canvas.height = H * dpr;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-    const targets = sampleText();
-
-    targets.forEach((t, i) => {
-      if (particles[i]) {
-        particles[i].tx = t.x;
-        particles[i].ty = t.y;
-      } else {
-        // 처음엔 화면 아무 데나 흩어진 상태에서 시작
-        particles.push({
-          x: Math.random() * W,
-          y: Math.random() * H,
-          vx: 0,
-          vy: 0,
-          tx: t.x,
-          ty: t.y,
-        });
-      }
-    });
-    particles.length = targets.length;
   }
 
 
   function frame() {
-    // 반투명 검정으로 덮어서 살짝 잔상이 남게
-    ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
-    ctx.fillRect(0, 0, W, H);
-    ctx.fillStyle = "#f2f2f0";
+    t += 0.01;
 
-    for (const p of particles) {
-      if (!leaving) {
-        // 글자 자리로 끌려감
-        p.vx += (p.tx - p.x) * SPRING;
-        p.vy += (p.ty - p.y) * SPRING;
+    // 마우스가 없으면 이름 위를 천천히 떠다니기
+    if (!hover && !leaving) {
+      T.x = W / 2 + Math.cos(t * 0.55) * W * 0.22;
+      T.y = H / 2 + Math.sin(t * 0.9) * H * 0.12;
+    }
 
-        // 마우스 근처면 밀려남
-        const dx = p.x - mouse.x;
-        const dy = p.y - mouse.y;
-        const d2 = dx * dx + dy * dy;
-        if (d2 < MOUSE_RADIUS * MOUSE_RADIUS) {
-          const d = Math.sqrt(d2) || 1;
-          const f = ((MOUSE_RADIUS - d) / MOUSE_RADIUS) * MOUSE_FORCE;
-          p.vx += (dx / d) * f;
-          p.vy += (dy / d) * f;
+    L.x += (T.x - L.x) * FOLLOW;
+    L.y += (T.y - L.y) * FOLLOW;
+
+    // 빨리 움직이면 진행 방향으로 살짝 늘어나기 (액체 느낌)
+    const vx = L.x - P.x;
+    const vy = L.y - P.y;
+    const vl = Math.hypot(vx, vy) || 1;
+    P.x = L.x;
+    P.y = L.y;
+    const sp = Math.min(vl / (dp * 45), 0.22);
+    const ux = vx / vl;
+    const uy = vy / vl;
+
+    // 클릭 후 물방울이 커짐
+    if (leaving) grow += (1 - grow) * 0.08;
+    const r = R * (1 + grow * 1.4);
+
+    // 1) 원본 그리기
+    ctx.drawImage(base, 0, 0);
+
+    // 2) 물방울 바깥 그림자
+    ctx.save();
+    ctx.shadowColor = `rgba(0, 0, 0, ${SHADOW})`;
+    ctx.shadowBlur = 34 * dp;
+    ctx.shadowOffsetY = 12 * dp;
+    ctx.fillStyle = BG_COLOR;
+    ctx.beginPath();
+    ctx.arc(L.x, L.y, r * 0.99, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // 3) 물방울 안쪽: 아래 글자를 굴절시켜 다시 그리기
+    const reach = r * (1 + sp) + 2;
+    const x0 = Math.max(0, Math.floor(L.x - reach));
+    const y0 = Math.max(0, Math.floor(L.y - reach));
+    const x1 = Math.min(W, Math.ceil(L.x + reach));
+    const y1 = Math.min(H, Math.ceil(L.y + reach));
+    const bw = x1 - x0;
+    const bh = y1 - y0;
+
+    if (bw > 0 && bh > 0) {
+      const img = ctx.getImageData(x0, y0, bw, bh);
+      const o = img.data;
+
+      for (let j = 0; j < bh; j++) {
+        const dy = y0 + j - L.y;
+        for (let i = 0; i < bw; i++) {
+          const dx = x0 + i - L.x;
+
+          // 움직이는 방향으로 늘어난 타원 안에 있는지
+          const along = (dx * ux + dy * uy) / (1 + sp);
+          const perp = (-dx * uy + dy * ux) / (1 - sp * 0.4);
+          const d = Math.hypot(along, perp) / r;
+          if (d >= 1) continue;
+
+          // 가운데는 확대, 가장자리는 바깥을 끌어당김
+          const d3 = d * d * d;
+          const scale = 1 - MAGNIFY + EDGE_BEND * d3 * d;
+          const fringe = COLOR_FRINGE * d3;
+
+          // 가장자리 3%는 부드럽게 섞기
+          const a = d > 0.97 ? (1 - d) / 0.03 : 1;
+          const k = (j * bw + i) * 4;
+
+          for (let ch = 0; ch < 3; ch++) {
+            const s = scale + (ch - 1) * fringe;   // R, G, B를 조금씩 다르게 → 색 번짐
+            let sx = Math.round(L.x + dx * s);
+            let sy = Math.round(L.y + dy * s);
+            sx = sx < 0 ? 0 : sx >= W ? W - 1 : sx;
+            sy = sy < 0 ? 0 : sy >= H ? H - 1 : sy;
+            const v = bd[(sy * W + sx) * 4 + ch];
+            o[k + ch] = o[k + ch] * (1 - a) + v * a;
+          }
         }
-
-        p.vx *= FRICTION;
-        p.vy *= FRICTION;
-      } else {
-        // 클릭 후: 점점 빨라지며 바깥으로 날아감
-        p.vx *= 1.03;
-        p.vy *= 1.03;
       }
 
-      p.x += p.vx;
-      p.y += p.vy;
-      ctx.fillRect(p.x, p.y, DOT, DOT);
+      ctx.putImageData(img, x0, y0);
     }
 
     rafId = requestAnimationFrame(frame);
   }
 
 
-  // ---- 클릭: 흩어지면서 입장 ----
-  function enter(cx, cy) {
+  // ---- 클릭: 물방울이 커지며 입장 ----
+  function enter() {
     if (leaving) return;
     leaving = true;
 
-    const ox = cx ?? W / 2;
-    const oy = cy ?? H / 2;
-
-    for (const p of particles) {
-      const a = Math.atan2(p.y - oy, p.x - ox) + (Math.random() - 0.5) * 0.6;
-      const speed = 6 + Math.random() * 18;
-      p.vx = Math.cos(a) * speed;
-      p.vy = Math.sin(a) * speed;
-    }
-
     try { sessionStorage.setItem("introSeen", "1"); } catch (e) {}
 
-    intro.classList.add("leaving");
-    document.body.classList.remove("intro-active");
-    document.body.classList.add("entered");
+    setTimeout(() => {
+      intro.classList.add("leaving");
+      document.body.classList.remove("intro-active");
+      document.body.classList.add("entered");
+    }, 350);
 
     setTimeout(() => {
       cancelAnimationFrame(rafId);
       intro.remove();
-    }, 1200);
+    }, 1600);
   }
 
 
   // ---- 이벤트 ----
   intro.addEventListener("pointermove", (e) => {
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
+    hover = true;
+    T.x = e.clientX * dp;
+    T.y = e.clientY * dp;
   });
-  intro.addEventListener("pointerleave", () => {
-    mouse.x = mouse.y = -9999;
-  });
-  intro.addEventListener("click", (e) => enter(e.clientX, e.clientY));
+  intro.addEventListener("pointerleave", () => { hover = false; });
+  intro.addEventListener("click", enter);
   intro.addEventListener("keydown", (e) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
@@ -188,7 +219,7 @@
   window.addEventListener("resize", () => { if (!leaving) build(); });
 
 
-  // 폰트가 다 불러와진 뒤에 글자를 샘플링해야 모양이 정확해요
+  // 폰트가 다 불러와진 뒤에 이름을 그려야 모양이 정확해요
   const start = () => {
     build();
     frame();
