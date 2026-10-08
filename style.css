@@ -16,9 +16,9 @@
   --card-hover: rgba(255, 255, 255, 0.9);
 
   /* 배경 빛 덩어리 색 (해 버튼으로 바뀜) */
-  --blob1: #ff6a3d;
-  --blob2: #7a5cff;
-  --blob3: #1fb6a6;
+  --blob1: #ffc7fa;
+  --blob2: #fbff8e;
+  --blob3: #46c4eb;
 
   --sans: "Geist", "Helvetica Neue", Arial, sans-serif;
   --mono: "Geist Mono", "Courier New", monospace;
@@ -154,8 +154,11 @@ body.entered .site {
   overflow: hidden;
   pointer-events: none;
   filter: blur(90px);
-  opacity: 0.5;
+  opacity: 0.35;
+  animation: hue-shift 20s linear infinite;   /* ← 이 줄 추가 */
 }
+
+
 
 .blob {
   position: absolute;
@@ -348,7 +351,6 @@ body.entered .site {
     repeating-linear-gradient(135deg,
       rgba(0, 0, 0, 0.04) 0 10px,
       transparent 10px 20px),
-    #f2f2f2;
     #f7f7f7;
 }
 
