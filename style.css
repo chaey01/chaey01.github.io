@@ -1,0 +1,517 @@
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap");
+
+/* ========================================
+   COLORS & FONTS (TOKENS)
+
+   사이트 전체 색과 폰트를 여기서 한 번에 관리해요.
+   값 하나만 바꾸면 사이트 전체가 바뀌어요.
+======================================== */
+
+:root {
+  --bg: #0a0a0b;
+  --text: #f2f2f0;
+  --muted: rgba(242, 242, 240, 0.5);
+  --line: rgba(255, 255, 255, 0.1);
+  --card: rgba(255, 255, 255, 0.04);
+  --card-hover: rgba(255, 255, 255, 0.08);
+
+  /* 배경 빛 덩어리 색 (해 버튼으로 바뀜) */
+  --blob1: #ff6a3d;
+  --blob2: #7a5cff;
+  --blob3: #1fb6a6;
+
+  --sans: "Geist", "Helvetica Neue", Arial, sans-serif;
+  --mono: "Geist Mono", "Courier New", monospace;
+}
+
+html[data-palette="dusk"]   { --blob1: #ff3d7f; --blob2: #ffb23d; --blob3: #3d6bff; }
+html[data-palette="forest"] { --blob1: #9be15d; --blob2: #1f7a5c; --blob3: #e0d35d; }
+html[data-palette="mono"]   { --blob1: #9a9a9a; --blob2: #4a4a4a; --blob3: #d0d0d0; }
+
+
+/* ========================================
+   GLOBAL
+======================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+
+/* ========================================
+   WEEK 페이지용 기본 레이아웃
+   (week1/index.html 등 다른 페이지가 계속 쓰는 규칙)
+======================================== */
+
+header { padding: 40px; }
+header h1 { margin: 0; font-size: 20px; font-weight: 500; }
+header p { margin: 10px 0 0 0; color: var(--muted); }
+main { padding: 40px; }
+footer { padding: 40px; font-size: 13px; }
+
+.page-nav {
+  display: flex;
+  justify-content: center;
+  gap: 80px;
+  padding: 50px 20px;
+  font-family: var(--mono);
+  font-size: 14px;
+}
+
+.page-nav a { padding: 2px 6px; }
+.page-nav a:hover { background: var(--text); color: var(--bg); }
+
+
+/* ========================================
+   INTRO (파티클)
+======================================== */
+
+body.intro-active {
+  overflow: hidden;       /* 인트로 동안 스크롤 막기 */
+}
+
+#intro {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: #000;
+  cursor: pointer;
+  outline: none;
+  transition: opacity 1.1s ease;
+}
+
+#intro.leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#intro canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.intro-hint {
+  position: absolute;
+  bottom: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--muted);
+  animation: blink 1.6s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 0.3; }
+  50%      { opacity: 1; }
+}
+
+
+/* ========================================
+   SITE FADE-IN
+   인트로를 클릭하면 사이트가 아래에서 살짝 떠오르며 나타나요.
+======================================== */
+
+.site {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 1s ease 0.3s, transform 1s ease 0.3s;
+}
+
+body.entered .site {
+  opacity: 1;
+  transform: none;
+}
+
+
+/* ========================================
+   BACKGROUND (흐릿하게 움직이는 빛)
+======================================== */
+
+.bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  filter: blur(90px);
+  opacity: 0.5;
+}
+
+.blob {
+  position: absolute;
+  width: 55vmax;
+  height: 55vmax;
+  border-radius: 50%;
+  transition: background 1.2s ease;
+  animation: drift 24s ease-in-out infinite alternate;
+}
+
+.b1 { top: -30vmax; left: -15vmax; background: radial-gradient(circle, var(--blob1), transparent 65%); }
+.b2 { top: -35vmax; right: -20vmax; background: radial-gradient(circle, var(--blob2), transparent 65%); animation-duration: 30s; }
+.b3 { top: -10vmax; left: 25vw;   background: radial-gradient(circle, var(--blob3), transparent 65%); animation-duration: 36s; opacity: 0.6; }
+
+@keyframes drift {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(8vw, 6vh) scale(1.15); }
+}
+
+
+/* ========================================
+   HOME LAYOUT
+======================================== */
+
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+
+/* ----- NAV ----- */
+
+.home .top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28px 0;
+  font-size: 14px;
+}
+
+.home .top .name {
+  font-weight: 500;
+}
+
+.home .top .links {
+  display: flex;
+  gap: 28px;
+}
+
+.home .top .links a {
+  color: var(--muted);
+  transition: color 0.2s ease;
+}
+
+.home .top .links a:hover {
+  color: var(--text);
+}
+
+
+/* ----- HERO ----- */
+
+.hero {
+  padding: 120px 0 110px;
+}
+
+.sun-button {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 36px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--card);
+  color: var(--text);
+  cursor: pointer;
+  transition: transform 0.4s ease, background 0.2s ease;
+}
+
+.sun-button:hover {
+  background: var(--card-hover);
+  transform: rotate(45deg);
+}
+
+.hero h1 {
+  max-width: 21ch;
+  margin: 0;
+  font-size: clamp(30px, 4.2vw, 48px);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+}
+
+.current {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 32px 0 0;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 10px #4ade80;
+}
+
+.more {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 14px;
+  border-bottom: 1px solid var(--line);
+  transition: border-color 0.2s ease;
+}
+
+.more:hover {
+  border-color: var(--text);
+}
+
+
+/* ----- WORK GRID ----- */
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 14px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.week {
+  display: block;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.week:hover {
+  background: var(--card-hover);
+  transform: translateY(-3px);
+}
+
+.thumb {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #111;
+}
+
+.thumb img,
+.thumb video,
+.thumb iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: cover;
+}
+
+/* 아직 작업이 없는 칸 */
+.thumb.empty {
+  display: grid;
+  place-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background:
+    repeating-linear-gradient(135deg,
+      rgba(255, 255, 255, 0.03) 0 10px,
+      transparent 10px 20px),
+    #0f0f10;
+}
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 12px 6px 4px;
+}
+
+.meta h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.num {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+
+/* ----- FOOTER ----- */
+
+.site-footer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-top: 160px;
+  padding: 36px 0 64px;
+  border-top: 1px solid var(--line);
+  font-size: 14px;
+}
+
+.site-footer p {
+  margin: 0;
+}
+
+.site-footer .label {
+  margin-bottom: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.site-footer .social {
+  display: flex;
+  gap: 16px;
+}
+
+.site-footer a:hover {
+  color: var(--muted);
+}
+
+
+/* ========================================
+   SKETCH PREVIEW PAGE (week1/preview.html)
+======================================== */
+
+.preview-page {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.preview-page canvas {
+  display: block;
+}
+
+
+/* ========================================
+   404 PAGE
+======================================== */
+
+.error-page { overflow-x: hidden; }
+
+.error-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.ascii {
+  margin: 0;
+  font-family: "Courier New", Courier, monospace;
+  font-size: clamp(5px, 0.72vw, 12px);
+  line-height: 1.15;
+  white-space: pre;
+  font-variant-ligatures: none;
+  letter-spacing: 0;
+  transform: scaleX(0.9);
+  transform-origin: center;
+}
+
+.error-message { margin-top: 80px; text-align: center; }
+.error-message h1 { margin: 0; font-size: 26px; font-weight: 400; letter-spacing: 2px; }
+.error-message p { margin-top: 45px; line-height: 1.7; }
+
+
+/* ========================================
+   MEME GENERATOR
+======================================== */
+
+.meme {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+
+.meme-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.meme-text {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  margin: 0;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: left;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 0 black;
+}
+
+button {
+  background-color: rgb(255, 209, 60);
+  font-family: inherit;
+  font-size: 17px;
+  padding: 10px 20px;
+}
+
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 900px) {
+  .week-grid { grid-template-columns: repeat(2, 1fr); }
+  .site-footer { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 560px) {
+  header, main, footer { padding: 20px; }
+  .home .top, .site-footer { padding-left: 0; padding-right: 0; }
+  .home .top .links { gap: 18px; }
+  .hero { padding: 72px 0 72px; }
+  .week-grid { grid-template-columns: 1fr; }
+  .error-container { padding: 20px; }
+  .page-nav { flex-direction: column; align-items: center; gap: 15px; }
+}
