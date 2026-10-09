@@ -870,7 +870,7 @@ body.week-page {
 /* Slime Mold Experiment (큰 제목) */
 .week-page header h2 {
   margin: 14px 0 0;
-  font-size: clamp(32px, 5vw, 64px);
+  font-size: clamp(15px, 2.5vw, 40px);
   font-weight: 500;
   letter-spacing: -0.02em;
   line-height: 1.1;

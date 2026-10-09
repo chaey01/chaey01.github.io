@@ -46,5 +46,16 @@ function draw() {
   rect(0, 0, width, height);
 
   // 3. 마우스 속도
-  let speed
-  
+  let speed = dist(pmouseX, pmouseY, mouseX, mouseY);
+
+  // 4. 무지개 색
+  let hueVal = (frameCount + speed * 2) % 360;
+  fill(hueVal, 80, 90, 0.5);
+  noStroke();
+
+  // 5. 빠를수록 큰 원
+  let radius = map(speed, 0, 100, 5, 80);
+
+  // 6. 원 그리기
+  circle(mouseX, mouseY, radius);
+}
