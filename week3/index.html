@@ -1,9 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <script>
-    window.location.replace("../404.html");
-  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Week 3 - Code as Nature · Fall 2026</title>
+
+  <link rel="stylesheet" href="../style.css">
 </head>
+
+
+<body>
+
+  <header>
+    <h1>Week 3: On Centaurism</h1>
+  </header>
+
+  <main>
+    <h2>On Centaurism</h2>
+
+
+    <div class="meme">
+  <img class="meme-image" id="meme-image" src="" alt="Random meme">
+  <p class="meme-text" id="meme-text">Click the button.</p>
+</div>
+<br>
+<button id="generate-button">[ Generate Meme ]</button>
+
+<script src="script.js"></script>
+<!-- 홈 썸네일(iframe) 안에서 열렸을 때: 밈만 보여 주고 자동으로 바꾸기 -->
+  <script>
+    if (window.self !== window.top) {
+      document.documentElement.classList.add("as-thumb");
+      const btn = document.querySelector("button");
+      if (btn) setInterval(() => btn.click(), 2000);   // 2초마다 새 밈
+    }
+  </script>
+  </main>
+
+<footer>
+
+  <nav class="page-nav">
+    <a href="../index.html">[ RETURN HOME ]</a>
+    <a href="javascript:history.back()">[ GO BACK ]</a>
+  </nav>
+
+  <p>Code as Nature · Fall 2026</p>
+
+</footer>
+
+  <!-- Load the p5.js library -->
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.11.8/lib/p5.min.js"></script>
+
+  <!-- Load our own code -->
+  <script src="sketch.js"></script>
+
+</body>
+
 </html>

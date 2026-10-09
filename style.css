@@ -843,3 +843,105 @@ button {
   from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: none; }
 }
+/* ========================================
+   WEEK PAGE (week1 등 각 주차 페이지)
+======================================== */
+
+body.week-page {
+  overflow-x: hidden;          /* 가로 스크롤 생기지 않게 */
+  --week-font: var(--mono);    /* ← 글씨체는 여기서 바꿔요 */
+}
+
+.week-page header {
+  padding: 48px 5vw 32px;
+  font-family: var(--week-font);
+}
+
+/* Week 1: Nature Computes (작은 라벨) */
+.week-page header h1 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Slime Mold Experiment (큰 제목) */
+.week-page header h2 {
+  margin: 14px 0 0;
+  font-size: clamp(32px, 5vw, 64px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+/* 초록 화면: 양옆 여백 없이 꽉 차게 */
+.week-page #sketch {
+  width: 100%;
+  line-height: 0;
+}
+
+.week-page #sketch canvas {
+  display: block;
+}
+
+.week-page footer {
+  padding: 0 5vw 40px;
+  font-family: var(--week-font);
+}
+/* ========================================
+   WEEK PAGE: 작품 화면을 창 전체에 꽉 채우기
+======================================== */
+
+body.week-page {
+  overflow: hidden;            /* 스크롤 없이 한 화면 */
+}
+
+/* 작품 화면을 창 전체에 깔기 */
+.week-page #sketch {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+/* 제목과 버튼은 작품 위에 하얗게 띄우기 */
+.week-page header,
+.week-page footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  color: #fff;
+  pointer-events: none;        /* 글자가 마우스를 막지 않게 → 그림이 잘 그려져요 */
+}
+
+.week-page header { top: 0; }
+
+.week-page footer {
+  bottom: 0;
+  padding: 0 5vw 28px;
+}
+
+.week-page header h1 {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.week-page .page-nav {
+  padding: 0 0 12px;
+}
+
+.week-page .page-nav a {
+  pointer-events: auto;        /* 버튼은 클릭되게 */
+}
+
+.week-page .page-nav a:hover {
+  background: #fff;
+  color: #111;
+}
+
+.week-page footer p {
+  margin: 0;
+  text-align: center;
+  opacity: 0.6;
+}
