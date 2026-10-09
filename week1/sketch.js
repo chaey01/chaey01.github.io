@@ -5,30 +5,29 @@ let themes = [
   {bg: [15,  80, 30]}, // Sunset
 ];
 
-// 캔버스 크기 정하기
-function canvasSize() {
-  // 홈 썸네일(preview.html)에서는 썸네일 칸에 꽉 차게
-  if (window.previewMode) return [windowWidth, windowHeight];
-  // Week 페이지에서는 가로 꽉 차게, 세로는 화면의 70%
-  const w = document.documentElement.clientWidth;
-  return [w, round(windowHeight * HEIGHT_RATIO)];
-}
-
-function setup() {
 // 캔버스 크기: 항상 브라우저 창 전체
 function canvasSize() {
   return [windowWidth, windowHeight];
 }
 
+function setup() {
+  const size = canvasSize();
+  const c = createCanvas(size[0], size[1]);
+  if (!window.previewMode) c.parent("sketch");
+
+  colorMode(HSB, 360, 100, 100);
+  background(themes[0].bg[0], themes[0].bg[1], themes[0].bg[2]);
+}
+
 // 브라우저 창 크기를 바꾸면 캔버스도 따라 바뀌어요
 function windowResized() {
-  const [w, h] = canvasSize();
-  resizeCanvas(w, h);
+  const size = canvasSize();
+  resizeCanvas(size[0], size[1]);
   background(themes[0].bg[0], themes[0].bg[1], themes[0].bg[2]);
 }
 
 function draw() {
-  // 1. Calculate automatic background transition using lerp
+  // 1. 배경색이 자동으로 바뀌기
   let transitionSpeed = 0.012;
   let progress = (frameCount * transitionSpeed) % themes.length;
   let idx1 = floor(progress);
@@ -42,21 +41,10 @@ function draw() {
   let currentS = lerp(c1[1], c2[1], t);
   let currentB = lerp(c1[2], c2[2], t);
 
-  // 2. Trail effect
+  // 2. 잔상 효과
   fill(currentH, currentS, currentB, 0.05);
   rect(0, 0, width, height);
 
-  // 3. Mouse speed
-  let speed = dist(pmouseX, pmouseY, mouseX, mouseY);
-
-  // 4. Rainbow fill
-  let hueVal = (frameCount + speed * 2) % 360;
-  fill(hueVal, 80, 90, 0.5);
-  noStroke();
-
-  // 5. Radius based on speed
-  let radius = map(speed, 0, 100, 5, 80);
-
-  // 6. Circle trails
-  circle(mouseX, mouseY, radius);
-}
+  // 3. 마우스 속도
+  let speed
+  
