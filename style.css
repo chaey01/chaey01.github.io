@@ -24,11 +24,6 @@
   --mono: "Geist Mono", "Courier New", monospace;
 }
 
-html[data-palette="dusk"]   { --blob1: #ff3d7f; --blob2: #ffb23d; --blob3: #3d6bff; }
-html[data-palette="forest"] { --blob1: #9be15d; --blob2: #2a8b6a; --blob3: #e0d35d; }
-html[data-palette="mono"]   { --blob1: #9a9a9a; --blob2: #4a4a4a; --blob3: #d0d0d0; }
-
-
 /* ========================================
    GLOBAL
 ======================================== */
@@ -223,41 +218,6 @@ body.entered .site {
 }
 
 
-/* ----- HERO ----- */
-
-.hero {
-  padding: 48px 0 110px;
-}
-
-.sun-button {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  margin-bottom: 36px;
-  padding: 0;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  background: var(--card);
-  color: var(--text);
-  cursor: pointer;
-  transition: transform 0.4s ease, background 0.2s ease;
-}
-
-.sun-button:hover {
-  background: var(--card-hover);
-  transform: rotate(45deg);
-}
-
-.hero h1 {
-  max-width: none;
-  margin: 0;
-  font-size: clamp(44px, 7vw, 104px);
-  font-weight: 500;
-  line-height: 1.05;
-  letter-spacing: -0.03em;
-}
-
 .current {
   display: flex;
   align-items: center;
@@ -282,31 +242,8 @@ body.entered .site {
   50%      { opacity: 0.25; box-shadow: 0 0 2px #baff31; }
 }
 
-.more {
-  display: inline-block;
-  margin-top: 14px;
-  font-size: 14px;
-  border-bottom: 1px solid var(--line);
-  transition: border-color 0.2s ease;
-}
-
-.more:hover {
-  border-color: var(--text);
-}
-
 
 /* ----- WORK GRID ----- */
-
-.section-head {
-  display: flex;
-  justify-content: space-between;
-  padding-bottom: 14px;
-  margin-bottom: 20px;
-  border-bottom: 1px solid var(--line);
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--muted);
-}
 
 .week-grid {
   display: flex;
@@ -743,10 +680,6 @@ button {
   bottom: 8%;
   font-size: 7vw;
 }
-/* 이름(Chaeyoung Shim)만 두껍게 */
-.hero h1 .line-1 {
-  font-weight: 600;
-}
 /* ========================================
    ABOUT PAGE
 ======================================== */
@@ -987,4 +920,17 @@ body.week-page {
   background: rgba(255, 255, 255, 0.45);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+}
+
+#meme-database {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+#meme-database .meme {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  min-width: 0;
 }
