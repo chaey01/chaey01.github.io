@@ -15,7 +15,7 @@
   --card: rgba(255, 255, 255, 0.55);
   --card-hover: rgba(255, 255, 255, 0.9);
 
-  /* 배경 빛 덩어리 색 (해 버튼으로 바뀜) */
+  /* 배경 빛 덩어리 색*/
   --blob1: #82d5ff;
   --blob2: #61a0ff;
   --blob3: #9346eb;
@@ -164,7 +164,6 @@ body.entered .site {
   width: 55vmax;
   height: 55vmax;
   border-radius: 50%;
-  transition: background 1.2s ease;
   animation: drift 24s ease-in-out infinite alternate;
 }
 
@@ -466,48 +465,6 @@ button {
   .error-container { padding: 20px; }
   .page-nav { flex-direction: column; align-items: center; gap: 15px; }
 }
-/* ========================================
-   TYPING EFFECT
-======================================== */
-
-/* 아직 안 써진 글자: 자리만 차지하고 안 보이게 */
-/* ========================================
-   SOFT TEXT REVEAL
-======================================== */
-
-.hero h1 .word {
-  display: inline-block;
-  white-space: nowrap;
-}
-
-.hero h1 .char {
-  display: inline-block;
-  opacity: 0;
-  filter: blur(10px);
-  transform: translateY(0.25em);
-  transition:
-    opacity 0.8s ease,
-    filter 0.8s ease,
-    transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-
-.hero h1.reveal .char {
-  opacity: 1;
-  filter: blur(0);
-  transform: none;
-}
-
-/* 줄마다 따로 배치 */
-.hero h1 .line {
-  display: block;
-}
-
-/* 두 번째 줄부터 (is ~ space.) 작게 */
-.hero h1 .line + .line {
-  font-size: 0.45em;      /* 이름 크기의 55% */
-  line-height: 1.25;
-  margin-top: 0.6em;      /* 이름과의 간격 */
-}
 
 /* ========================================
    RING WORK LAYOUT (ring.js와 함께 써요)
@@ -680,10 +637,6 @@ button {
   bottom: 8%;
   font-size: 7vw;
 }
-/* ========================================
-   ABOUT PAGE
-======================================== */
-
 .about {
   margin: 0;
   padding: 60px 0 40px;

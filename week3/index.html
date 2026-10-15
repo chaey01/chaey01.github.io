@@ -1,61 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Week 3 - Code as Nature · Fall 2026</title>
-
-  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../style.css?v=6">
 </head>
 
-
-<body>
+<body class="week-page face-page">
 
   <header>
     <h1>Week 3: On Centaurism</h1>
+    <h2>On Centaurism</h2>
   </header>
 
-  <main>
-    <h2>On Centaurism</h2>
+  <!-- 작품이 들어가는 칸 -->
+  <div id="sketch"></div>
+   <div id="p5_loading">loading camera…</div>
 
+  <footer>
+    <nav class="page-nav">
+      <a href="../index.html">[ RETURN HOME ]</a>
+      <a href="javascript:history.back()">[ GO BACK ]</a>
+    </nav>
+    <p>Code as Nature · Fall 2026</p>
+  </footer>
 
-    <div class="meme">
-  <img class="meme-image" id="meme-image" src="" alt="Random meme">
-  <p class="meme-text" id="meme-text">Click the button.</p>
-</div>
-<br>
-<button id="generate-button">[ Generate Meme ]</button>
-
-<script src="script.js"></script>
-<!-- 홈 썸네일(iframe) 안에서 열렸을 때: 밈만 보여 주고 자동으로 바꾸기 -->
-  <script>
-    if (window.self !== window.top) {
-      document.documentElement.classList.add("as-thumb");
-      const btn = document.querySelector("button");
-      if (btn) setInterval(() => btn.click(), 2000);   // 2초마다 새 밈
-    }
-  </script>
-  </main>
-
-<footer>
-
-  <nav class="page-nav">
-    <a href="../index.html">[ RETURN HOME ]</a>
-    <a href="javascript:history.back()">[ GO BACK ]</a>
-  </nav>
-
-  <p>Code as Nature · Fall 2026</p>
-
-</footer>
-
-  <!-- Load the p5.js library -->
+  <!-- p5.js -->
   <script src="https://cdn.jsdelivr.net/npm/p5@1.11.8/lib/p5.min.js"></script>
-
-  <!-- Load our own code -->
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.11.8/lib/addons/p5.sound.min.js"></script>
+  <script src="https://unpkg.com/ml5@1/dist/ml5.min.js"></script>
   <script src="sketch.js"></script>
+  <script src="sound.js"></script>
 
 </body>
-
 </html>

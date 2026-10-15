@@ -1,0 +1,29 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+canvas {
+  display: block;
+}
+/* ========================================
+   WEEK 6: 카메라 작품 (가운데 + 검정 배경)
+======================================== */
+
+.face-page #sketch {
+  display: grid;
+  place-items: center;
+  background: #000;
+}
+/* 카메라 작품 로딩 문구 */
+#p5_loading {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  background: #000;
+  color: rgba(255, 255, 255, 0.6);
+  font: 400 12px var(--mono);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
