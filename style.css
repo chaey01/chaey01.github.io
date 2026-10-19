@@ -887,3 +887,84 @@ body.week-page {
   aspect-ratio: 1 / 1;
   min-width: 0;
 }
+
+/* ========================================
+   카메라 작품 로딩 화면
+======================================== */
+
+#p5_loading {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;          /* 가로 가운데 */
+  justify-content: center;      /* 세로 가운데 */
+  gap: 18px;                    /* 동그라미와 글자 사이 */
+  background: #000;
+  color: #fff;
+  font-family: var(--sans);     /* 메인 화면과 같은 Geist 글씨체 */
+  font-size: 14px;
+  letter-spacing: 0.02em;
+}
+
+#p5_loading p {
+  margin: 0;
+  opacity: 0.8;
+}
+
+/* 빙글빙글 도는 로딩 동그라미 */
+#p5_loading .spinner {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);   /* 흐린 원 */
+  border-top-color: #fff;                         /* 하얀 부분이 돌아가요 */
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+/* ========================================
+   WEEK 6 썸네일 모드 (홈 iframe 안에서만)
+======================================== */
+
+.as-grid body {
+  margin: 0;
+  overflow: hidden;
+  background: #000;
+}
+
+/* 제목, 버튼, footer는 숨기기 */
+.as-grid header,
+.as-grid footer,
+.as-grid main > h2 {
+  display: none;
+}
+
+.as-grid main {
+  padding: 0;
+}
+
+/* 밈 격자를 작게, 3줄로 촘촘하게 */
+.as-grid #meme-database {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  animation: thumb-scroll 40s ease-in-out infinite alternate;
+}
+
+.as-grid #meme-database .meme {
+  max-width: none;
+}
+
+.as-grid .meme-text {
+  bottom: 6%;
+  font-size: 2.4vw;
+  text-shadow: 1px 1px 0 black;
+}
+
+/* 격자가 천천히 위아래로 흘러가기 */
+@keyframes thumb-scroll {
+  to { transform: translateY(calc(-100% + 100vh)); }
+}
