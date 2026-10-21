@@ -443,7 +443,7 @@ main button {
   padding: 12px 22px;
   margin: 0 8px 8px 0;
   border: 1px solid rgba(0, 0, 0, 0.1);          /* 얇은 테두리 */
-  border-radius: 14px;                            /* 둥근 모서리 */
+  border-radius: 10px;                            /* 둥근 모서리 */
   background: rgba(255, 255, 255, 0.55);          /* 반투명 흰색 */
   backdrop-filter: blur(12px);                    /* 뒤가 뿌옇게 비치는 유리 */
   -webkit-backdrop-filter: blur(12px);
@@ -884,7 +884,7 @@ body.week-page {
 ======================================== */
 
 .ring-on .thumb {
-  border-radius: 22px;              /* 모서리 둥글기 */
+  border-radius: 18px;              /* 모서리 둥글기 */
   isolation: isolate;
   box-shadow:
       0 10px 30px rgba(0, 0, 0, 0.06);       /* 아래로 은은한 그림자 */
@@ -989,4 +989,16 @@ body.week-page {
 /* 격자가 천천히 위아래로 흘러가기 */
 @keyframes thumb-scroll {
   to { transform: translateY(calc(-100% + 100vh)); }
+}
+
+/* ========================================
+   배경 그라데이션(흐릿한 빛) 없애기
+======================================== */
+
+.bg {
+  display: none;
+}
+
+body {
+  background: #fff;
 }
