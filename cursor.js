@@ -18,8 +18,8 @@
   const SIZE = 35;          // 평소 구슬 크기(px)
   const HOVER_SIZE = 50;    // 카드·버튼 위에서의 크기(px)
   const FOLLOW = 0.8;       // 따라오는 속도 (1이면 바로, 작을수록 느긋하게)
-  const BEND = 30;           // 휘어지는 정도 (클수록 볼록하게)
-  const FRINGE = 10;         // 가장자리 색 번짐 정도 (0이면 없음)
+  const BEND = 10;           // 휘어지는 정도 (클수록 볼록하게)
+  const FRINGE = 5;         // 가장자리 색 번짐 정도 (0이면 없음)
   const HOVER_TARGETS = "a, button, .week";
 
   // ---- 1) 렌즈 모양 지도 만들기 (가운데→바깥으로 밀어내는 방향을 색으로 저장) ----
