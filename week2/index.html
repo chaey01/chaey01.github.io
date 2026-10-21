@@ -1,44 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Week 2 - Code as Nature · Fall 2026</title>
+  <link rel="stylesheet" href="../style.css?v=8">
 
-  <link rel="stylesheet" href="../style.css">
+  <!-- 이 페이지만: 흰 바탕이라 글자를 검정으로 -->
+  <style>
+    body.week-page { background: #fff; }
+    .week-page header,
+    .week-page footer { color: var(--text); }
+    .week-page header h1 { color: var(--muted); }
+    .week-page .page-nav a:hover { background: var(--text); color: #fff; }
+
+    /* 404 아래 문구 */
+    .oops {
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: 72vh;
+      z-index: 1;
+      margin: 0;
+      text-align: center;
+      font-family: var(--sans);
+      font-size: clamp(18px, 2vw, 28px);
+      letter-spacing: -0.01em;
+      pointer-events: none;
+    }
+    .oops span {
+      display: block;
+      margin-top: 10px;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+  </style>
 </head>
 
-<body>
+<body class="week-page">
+
+  <!-- 홈과 같은 흐릿한 빛 배경 -->
+  <div class="bg" aria-hidden="true">
+    <span class="blob b1"></span>
+    <span class="blob b2"></span>
+    <span class="blob b3"></span>
+  </div>
 
   <header>
     <h1>Week 2: Specters of the Web</h1>
+
   </header>
 
-  <main>
-    <h2>Specters of the Web
+  <!-- 작품이 들어가는 칸 -->
+  <div id="sketch"></div>
 
-    <div id="sketch"></div>
-  </main>
+  <p class="oops">
+    Oops! This page doesn't exist anymore.
+    <span>hover to disturb · click to pop</span>
+  </p>
 
-<footer>
+  <footer>
+    <nav class="page-nav">
+      <a href="../index.html">[ RETURN HOME ]</a>
+      <a href="javascript:history.back()">[ GO BACK ]</a>
+    </nav>
+    <p>Code as Nature · Fall 2026</p>
+  </footer>
 
-  <nav class="page-nav">
-    <a href="../index.html">[ RETURN HOME ]</a>
-    <a href="javascript:history.back()">[ GO BACK ]</a>
-  </nav>
-
-  <p>Code as Nature · Fall 2026</p>
-
-</footer>
-
-  <!-- Load the p5.js library -->
   <script src="https://cdn.jsdelivr.net/npm/p5@1.11.8/lib/p5.min.js"></script>
-
-  <!-- Load our own code -->
-  <script src="sketch.js"></script>
+  <script src="sketch.js?v=2"></script>
 
 </body>
-
 </html>

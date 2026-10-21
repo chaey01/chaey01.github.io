@@ -438,11 +438,33 @@ body.entered .site {
   text-shadow: 2px 2px 0 black;
 }
 
-button {
-  background-color: rgb(255, 209, 60);
-  font-family: inherit;
-  font-size: 17px;
-  padding: 10px 20px;
+/* Week 페이지 버튼 (Generate Meme, Save Meme 등): 메인 화면 같은 유리 느낌 */
+main button {
+  padding: 12px 22px;
+  margin: 0 8px 8px 0;
+  border: 1px solid rgba(0, 0, 0, 0.1);          /* 얇은 테두리 */
+  border-radius: 14px;                            /* 둥근 모서리 */
+  background: rgba(255, 255, 255, 0.55);          /* 반투명 흰색 */
+  backdrop-filter: blur(12px);                    /* 뒤가 뿌옇게 비치는 유리 */
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);     /* 은은한 그림자 */
+  color: var(--text);
+  font-family: var(--sans);                       /* 메인 화면과 같은 Geist */
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* 마우스를 올리면 살짝 떠오르며 더 하얗게 */
+main button:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.1);
+}
+
+/* 누르는 순간 살짝 눌리게 */
+main button:active {
+  transform: translateY(0);
 }
 
 
