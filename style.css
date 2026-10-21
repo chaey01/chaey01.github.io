@@ -1002,3 +1002,55 @@ body.week-page {
 body {
   background: #fff;
 }
+/* ========================================
+   GLASS CURSOR (cursor.js와 함께)
+======================================== */
+
+/* ========================================
+   GLASS CURSOR (cursor.js와 함께) — 투명한 비눗방울 + 보글보글
+======================================== */
+
+.glass-cursor,
+.cursor-bubble {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 9999;
+  border-radius: 50%;
+  pointer-events: none;           /* 클릭은 방울 아래로 그대로 통과 */
+
+  /* 거의 투명한 몸통 (가장자리만 살짝 푸르게) */
+  background: radial-gradient(circle at 50% 55%, rgba(255, 255, 255, 0) 50%, rgba(190, 205, 255, 0.18) 100%);
+  backdrop-filter: blur(0.5px) saturate(1.4);
+  -webkit-backdrop-filter: blur(0.5px) saturate(1.4);
+  box-shadow: 0 1px 4px rgba(60, 70, 120, 0.1);   /* 아주 옅은 그림자 */
+}
+
+.glass-cursor {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* 무지갯빛 얇은 테두리 (천천히 돌아요) */
+.glass-cursor::before,
+.cursor-bubble::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    rgba(255, 222, 241, 0.9),
+    rgba(140, 190, 255, 0.9),
+    rgba(190, 150, 255, 0.85),
+    rgba(255, 150, 210, 0.9)
+  );
+  /* 가운데는 비우고 가장자리 링만 남기기 */
+  -webkit-mask: radial-gradient(circle, transparent 0 58%, #000 72%);
+          mask: radial-gradient(circle, transparent 0 58%, #000 72%);
+  animation: cursor-shimmer 4s linear infinite;
+}
+
+@keyframes cursor-shimmer {
+  to { transform: rotate(360deg); }
+}
