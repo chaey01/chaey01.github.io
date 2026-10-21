@@ -32,7 +32,7 @@
   const SMOOTH = 0.1;          // 배열이 바뀔 때 움직임의 부드러움 (작을수록 느긋하게)
   const CARD = 170;            // 카드 너비(px). style.css의 .ring-on .week width와 같게 맞춰요
 
-  const MODES = ["flat", "tilt", "ring", "gallery"];
+  const MODES = ["flat", "tilt", "gallery"];
   let mode = START_MODE;
 
 
@@ -135,13 +135,6 @@
     if (mode === "tilt") {
       return { x: RX * Math.cos(a), y: RY * 0.45 * Math.sin(a), z: RX * 0.6 * Math.sin(a), ry: 0 };
     }
-
-    // 회전목마
-    if (mode === "ring") {
-      const depth = RX * 0.6;
-      return { x: RX * Math.sin(a), y: 0, z: depth * Math.cos(a) - depth, ry: (a * 180) / Math.PI };
-    }
-
     // 격자 (화면 폭에 맞춰 줄 수 자동)
     const step = CARD + 24;
     const cols = Math.max(1, Math.floor((W - 40) / step));
