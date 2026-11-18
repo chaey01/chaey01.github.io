@@ -1,9 +1,64 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <script>
-    window.location.replace("../404.html");
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Week 10: Becoming Virtual · Code as Nature</title>
+
+  <link rel="stylesheet" href="../style.css">
+
+  <script
+    type="module"
+    src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.3.1/model-viewer.min.js">
   </script>
+
+  <script src="sketch.js" defer></script>
 </head>
+
+<body>
+  <header>
+    <h1>Week 10: Becoming Virtual</h1>
+    <p>✰ Exploring the boundaries of digital reality ✰</p>
+  </header>
+
+  <main id="week10">
+
+    <section class="ar-section">
+      <model-viewer
+        id="character-viewer"
+        src="character.glb"
+        ios-src="character.usdz"
+        alt="An animated three-dimensional character"
+        camera-controls
+        autoplay
+        shadow-intensity="1"
+        exposure="1"
+        ar
+        ar-placement="floor"
+        ar-scale="auto"
+        ar-modes="webxr scene-viewer quick-look">
+
+        <button
+          id="ar-button"
+          class="ar-button"
+          slot="ar-button"
+          type="button">
+          [ VIEW IN YOUR SPACE ]
+        </button>
+
+      </model-viewer>
+    </section>
+
+  </main>
+
+  <nav class="page-nav" aria-label="Page navigation">
+    <a href="../index.html">[ RETURN HOME ]</a>
+    <a href="../week9/index.html">[ PREVIOUS WEEK ]</a>
+  </nav>
+
+  <footer>
+    <p>Code as Nature · Fall 2026</p>
+  </footer>
+</body>
 </html>
